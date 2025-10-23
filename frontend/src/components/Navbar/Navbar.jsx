@@ -80,13 +80,30 @@ function Navbar() {
 
             <div className='flex items-center space-x-2 md:space-x-3 lg:space-x-4 ml-3
             md:ml-3 lg:ml-6 mr-2 md:mr-3 lg:mr-4 '>
-              <Navbar to ='/cart' className='p-2 md:p-2.0 lg:p-3 text-amber-100 rounded-xl transition-all
+              <NavLink to ='/cart' className='p-2 md:p-2.0 lg:p-3 text-amber-100 rounded-xl transition-all
               relative border-2 border-amber-900/30 hover:border-amber-600/50 group hover:bg-amber-900/20
               hover:shadow-lg hover:shadow-amber-500/30 shadow-md shadow-amber-900/20'>
                 <FiShoppingCart className='text-base md:text-lg lg:text-lg'/>
-                {}
-              </Navbar>
+                {totalItems >0 &&(
+                  <span className='absolute -top-2 -right-2 bg-amber-600
+                  text-amber-100 text-xs w-5 h-5 rounded-full flex items-center justify-center'>
+                         {totalItems}
+                  </span>
+                )}
+              </NavLink>
             </div>
+          </div>
+          {/*MOBILE MENU*/}
+          <div className='md-hidden flex items-center mr-2'> 
+              <button className='text-amber-500 hover:text-amber-300 focus:outline-none transition-all p-2 rounded-xl border-2 border-amber-900/30 hover:border-amber-600/50 relative shadow-md shadow-amber-900/20
+              hover:shadow-lg hover:shadow-amber-500/30' onClick={()=> setIsOpen(!isOpen)} >
+                <div className='space-y-2 relative'>
+                  <span className={`block w-6 h-[2px] bg-current transition-all
+                    ${isOpen? 'rotate-45 translate-y-[7px]': ''}`}/>
+                  <span className={`block w-6 h-[2px] bg-current ${isOpen ? 'opacity-0' : ''}`}/>
+                  <span className={`block w-6 h-[2px] bg-current transiton-all ${isOpen ? '-rotate-45 -translate-y-[7px]': ''}`}/>
+                </div>   
+              </button>
           </div>
         </div>
       </div>

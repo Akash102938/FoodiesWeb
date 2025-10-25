@@ -1,18 +1,87 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { GiForkKnifeSpoon, GiChefToque } from "react-icons/gi";
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate,useLocation } from 'react-router-dom';
 import {
   FiHome,
   FiBook,
   FiStar,
   FiPhone,
   FiShoppingCart,
+  FiLogOut,
+  FiKey,
 } from 'react-icons/fi';
 import { useCart } from '../../CartContext/CartContext';
+import Login from '../Login/Login';
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { totalItems } = useCart()
+  const [showLoginModel , setShowLoginModel] = useState(false)
+  const location = useLocation()
+  const navigate = useNavigate()
+  
+
+  //COMBINE UPDATING LOGIN MODAL AND AUTH STATUS ON LOCATION CHANGE
+  const [isAuthenticated,setIsAuthenticated] = useState(
+    Boolean(localStorage.getItem('loginData'))
+  )
+
+  useEffect(()=>{
+    setShowLoginModel(location.pathname === '/login')
+    setIsAuthenticated(Boolean(localStorage.getItem('loginData')))
+  },[location.pathname])
+
+  const handleLoginSuccesss = ()=>{
+    localStorage.setItem('loginData', JSON.stringify({loggedIn: true}));
+    setIsAuthenticated(true);
+    navigate('/')
+  }
+
+  const handleLogout = ()=>{
+    localStorage.removeItem('loginData');
+    setIsAuthenticated(false)
+  }
+
+  //EXTRACT DESKTOP AUTH BUTTON
+  const renderDesktopAuthButton = ()=>{
+    return isAuthenticated ? (
+      <button onClick={handleLogout} className='px-3 md:px-3 lg:px-6 py-1.5 md:py-2 lg:py-3 bg-gradient-to-br
+      from-amber-600 to-amber-700 text-[#2D1B0E] rounded-2xl font-bold hover:shadow-lg hover:shadow-amber-600/40 transition-all
+      transform hover:scale-[1.02] border-2 border-amber-600/20 flex items-center space-x-2
+      shadow-md shadow-amber-900/20 text-xs md:text-sm lg:text-sm'>
+        <FiLogOut className='text-base md:text-lg lg:text-lg'/>
+        <span className='text-shadow'>Logout</span>
+      </button>
+    ):(
+      <button onClick={()=>navigate('/login')} className='px-3 md:px-3 lg:px-6 py-1.5 md:py-2 lg:py-3 bg-gradient-to-br
+      from-amber-600 to-amber-700 text-[#2D1B0E] rounded-2xl font-bold hover:shadow-lg hover:shadow-amber-600/40 transition-all
+      transform hover:scale-[1.02] border-2 border-amber-600/20 flex items-center space-x-2
+      shadow-md shadow-amber-900/20 text-xs md:text-sm lg:text-sm'>
+        <FiKey className='text-base md:text-lg lg:text-lg'/>
+        <span className='text-shadow'>Login</span>
+      </button>
+    )
+  }
+
+  //EXTRACT MOBILE AUTH BUTTON
+  const renderMobileAuthButton = ()=>{
+    return isAuthenticated ? (
+      <button onClick={handleLogout} className='w-full px-4 py-3 bg-gradient-to-r from-amber-500 to-amber-700
+      text-[#2D1B0E] rounded-xl font-semibold flex items-center justify-center space-x-2 text-sm'>
+      <FiLogOut/>
+      <span>Logout</span>
+      </button>
+    ):(
+      <button onclick={()=>{
+        navigate('/login')
+        setIsOpen(false)
+      }} className='w-full px-4 py-3 bg-gradient-to-r from-amber-500 to-amber-700
+      text-[#2D1B0E] rounded-xl font-semibold flex items-center justify-center space-x-2 text-sm'>
+        <FiKey/>
+        <span>Login</span>
+      </button>
+    )
+  }
 
   const navLinks = [
     { name: 'Home', to: '/', icon: <FiHome /> },
@@ -92,6 +161,7 @@ function Navbar() {
                   </span>
                 )}
               </NavLink>
+              {renderDesktopAuthButton()}
             </div>
           </div>
           {/*MOBILE MENU*/}
@@ -113,10 +183,52 @@ function Navbar() {
       {isOpen && (
         <div className='md:hidden bg-[#2D1B0E] border-t-4 border-amber-900/40 relative shadow-lg
         shadow-amber-900/30 w-full '>
-         
+         <div className='px-4 py-4 space-y-2'>
+           {navLinks.map((link)=>(
+            <NavLink key={link.name} to= {link.to} onClick={()=> setIsOpen(false)} className={({isActive})=>
+            `block px-4 py-3 text-sm rounded-xl transition-all items-center ${isActive ? 'bg-amber-600/30 text-amber-400': 'text-amber-100 hover:bg-amber-600/20'}border-2
+            ${isActive ? 'border-amber-600/50' : 'border-amber-900/30'}`}>
+              <span className='mr-3 text-amber-500'>
+                 {link.icon}
+              </span>
+              {link.name}
+            </NavLink>
+           ))}
+           <div className='pt-4 border-t-2 border-amber-900/30 space-y-2'>
+            <NavLink to='/cart' onClick={()=> setIsOpen(false)}
+            className='w-full px-4 py-3 text-center text-amber-100 rounded-xl border-2 border-amber-900/30 hover:border-amber-600/50 flex
+            items-center justify-center space-x-2 text-sm'>
+              <FiShoppingCart className = 'text-lg'/>
+              {totalItems>0 && (
+                <span className='top-2 right-2 bg-amber-600
+                text-amber-100 text-xs w-5 h-5 rounded-full flex items-center justify-center'>
+                    {totalItems}
+                </span>
+              )}
+            </NavLink>
+            {renderMobileAuthButton()}
+           </div>
+         </div>
         </div>
       )}
-      
+
+      {/* LOGIN MODEL */}
+      {showLoginModel && (
+        <div className='fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4'>
+          <div className='bg-gradient-to-br from-[#2D1B0E] to-[#ra372a] rounded-xl p-6
+          w-full max-w-[480px] relative border-4 border-amber-700/30 shadow-[0_0_30px] shadow-amber-500/30'>
+            <button onClick={()=> navigate('/')}
+              className='absolute top-2 right-2 text-amber-500 hover:text-amber-300 text-2xl'>
+               &times;
+            </button>
+            <h2 className='text-2xl font-bold bg-gradient-to-r from-amber-400 to-amber-600
+            bg-clip-text text-transparent mb-4 text-center'>
+              Foodie-Frenzy
+            </h2>
+            <Login onLoginSuccess = {handleLoginSuccesss} onClose={()=> navigate('/')}/>
+          </div>
+        </div>
+      )}      
     </nav>
   );
 }

@@ -1,11 +1,11 @@
 import {Route, Routes} from 'react-router-dom'
 import React from 'react'
 import Home from './pages/Home/Home'
-import './App.css'
 import ContactPage from './pages/ContactPage/ContactPage'
 import AboutPage from './pages//AboutPage/AboutPage'
 import Menu from './pages/Menu/Menu'
 import Cart from './pages/Cart/Cart'
+
 
 function App() {
   return (
@@ -17,6 +17,7 @@ function App() {
         <Route path='/about' element={<AboutPage/>}/>
         <Route path='/menu' element={<Menu/>}/>
         <Route path='/cart' element={<Cart/>}/>
+        <Route path='/login' element={<Home/>}/>
       </Routes>
     </>
   )

@@ -17,7 +17,6 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { totalItems } = useCart()
   const [showLoginModel , setShowLoginModel] = useState(false)
-<<<<<<< HEAD
   const location = useLocation()
   const navigate = useNavigate()
   
@@ -83,8 +82,6 @@ function Navbar() {
       </button>
     )
   }
-=======
->>>>>>> 03bf485cfad8e2009e2dc7125547221914a45e28
 
   const navLinks = [
     { name: 'Home', to: '/', icon: <FiHome /> },
@@ -209,10 +206,7 @@ function Navbar() {
                 </span>
               )}
             </NavLink>
-<<<<<<< HEAD
             {renderMobileAuthButton()}
-=======
->>>>>>> 03bf485cfad8e2009e2dc7125547221914a45e28
            </div>
          </div>
         </div>
@@ -223,7 +217,6 @@ function Navbar() {
         <div className='fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4'>
           <div className='bg-gradient-to-br from-[#2D1B0E] to-[#ra372a] rounded-xl p-6
           w-full max-w-[480px] relative border-4 border-amber-700/30 shadow-[0_0_30px] shadow-amber-500/30'>
-<<<<<<< HEAD
             <button onClick={()=> navigate('/')}
               className='absolute top-2 right-2 text-amber-500 hover:text-amber-300 text-2xl'>
                &times;
@@ -233,12 +226,6 @@ function Navbar() {
               Foodie-Frenzy
             </h2>
             <Login onLoginSuccess = {handleLoginSuccesss} onClose={()=> navigate('/')}/>
-=======
-            <button onAbort={}>
-
-            </button>
-            
->>>>>>> 03bf485cfad8e2009e2dc7125547221914a45e28
           </div>
         </div>
       )}      

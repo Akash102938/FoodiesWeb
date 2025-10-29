@@ -72,7 +72,7 @@ function Navbar() {
       <span>Logout</span>
       </button>
     ):(
-      <button onclick={()=>{
+      <button onClick={()=>{
         navigate('/login')
         setIsOpen(false)
       }} className='w-full px-4 py-3 bg-gradient-to-r from-amber-500 to-amber-700

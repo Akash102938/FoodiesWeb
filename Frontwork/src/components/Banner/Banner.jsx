@@ -6,6 +6,15 @@ function Banner() {
   const [searchQuery, setSearchQuery] = useState('')
   const [showVideo, setShowVideo] = useState(false)
   const { bannerImage, orbitImages, video } = bannerAssets
+  // debug: log resolved image imports (will print during dev runtime)
+  if (typeof window !== 'undefined') {
+    // eslint-disable-next-line no-console
+    console.log('bannerImage resolved ->', bannerImage)
+    // eslint-disable-next-line no-console
+    console.log('orbitImages resolved ->', orbitImages)
+  }
+  // fallback SVG data URL for images that fail to load
+  const bannerFallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect width='100%' height='100%' fill='%232a1e1e'/><text x='50%' y='50%' fill='%23ffffff' font-size='18' font-family='Arial' dominant-baseline='middle' text-anchor='middle'>Image%20not%20available</text></svg>"
   const handleSearch = () => {
     e.preventDefault()
     console.log(searchQuery);
@@ -65,8 +74,12 @@ function Banner() {
             {/*MAIB IMG*/}
             <div className='relative rounded-full p-1 bg-gradient-to-r from-amber-700 via-amber-800 to-amber-400
                   shadow-2xl z-20 w-[250px] xs:w-[300px] sm:w-[350px] h-[250px] xs:h-[300px] sm:h-[350px] mx-auto'>
-              <img src={bannerImage} alt="Banner" className='rounded-full border-4 xs:border-8 border-amber-900/50
-                    w-full h-full object-cover object-top' />
+              <img
+                src={bannerImage}
+                alt="Banner"
+                onError={(e) => { if (e?.target) e.target.src = bannerFallback }}
+                className='rounded-full border-4 xs:border-8 border-amber-900/50 w-full h-full object-cover object-top'
+              />
               <div className='absoulte inset-0 rounded-full bg-gradient-to-b from-transparent to-amber-900/40 mix-blend-multiply' />
             </div>
             {/*ORBIT IMAGES*/}
@@ -74,8 +87,12 @@ function Banner() {
               <div key={index} className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
                         ${index === 0 ? 'orbit' : `orbit-delay-${index * 5}`} 
                         w-[80px] xs:w-[100px] sm:w-[150px] h-[80px] xs:h-[100px] sm:h-[150px]`}>
-                <img src={imgSrc} alt={`Orbiting ${index + 1}`}
-                  className='w-full h-full rounded-full border border-amber-500/30 bg-amber-900 p-1 object-cover' />
+                <img
+                  src={imgSrc}
+                  alt={`Orbiting ${index + 1}`}
+                  onError={(e) => { if (e?.target) e.target.src = bannerFallback }}
+                  className='w-full h-full rounded-full border border-amber-500/30 bg-amber-900 p-1 object-cover'
+                />
               </div>
             ))}
           </div>

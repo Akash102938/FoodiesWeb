@@ -1,23 +1,20 @@
 import React, { useState } from 'react'
 import { useCart } from '../../CartContext/CartContext'
-import {dummyMenuData} from '../../assets/OmhDD'
-import { FaPlus,FaMinus } from "react-icons/fa";
-import {Link } from 'react-router-dom'
-import './OurHomeMenu.css'
+import {dummyMenuData} from '../../assets/OmDD'
 
+import { FaPlus ,FaMinus  } from "react-icons/fa";
+import './OurMenu.css'
 const categories = ['Breakfast', 'Lunch', 'Dinner','Mexican', 'Italian', 'Desserts', 'Drinks']
-
-function OurHomeMenu() {
-  const [activeCategory, setActiveCartegory] = useState(categories[0])
-  const displayItems = (dummyMenuData[activeCategory] || [] ).slice(0,4)
-  const {cartItems, addToCart, removeFromCart} = useCart()
-    const getQuantity = id =>(cartItems.find(i => i.id===id)?.quantity || 0)
-
+function OurMenu() {
+    const [activeCategory, setActiveCartegory] = useState(categories[0])
+        const displayItems = (dummyMenuData[activeCategory] || [] ).slice(0,4)
+        const {cartItems, addToCart, removeFromCart} = useCart()
+const getQuantity = id =>(cartItems.find(i => i.id===id)?.quantity || 0)
   return (
     <div className='bg-gradient-to-br from-[#1a120b] to-[#3a2b1d] min-h-screen py-16
     px-4 sm:px-6 lg:px-8'>
         <div className='max-w-7xl mx-auto'>
-            <h2 className=' text-center mb-12 bg-clip-text text-transparent
+            <h2 className='text-4xl sm:text-5xl md:text-6xl font-bold text-center mb-12b bg-clip-text text-transparent
             bg-gradient-to-r from-amber-200 via-amber-300 to-amber-200'> 
                 <span className='font-dancingscript block text-5xl md:text-7xl sm:text-6xl mb-2'>
                    Our Exquistic Menu
@@ -47,12 +44,8 @@ function OurHomeMenu() {
                     border-amber-800/30 backdrop-blur-sm flex flex-col transition-all duration-500'
                     style={{'--index': i}}>
                        <div className='relative h-48 sm:h-56 md:h-60 flex items-center justify-center bg-black/10'>
-                               <img
-                                 src={item.image}
-                                 alt={item.name}
-                                 onError={(e) => { if (e?.target) e.target.src = fallbackImage }}
-                                 className='max-h-full max-w-full object-contain transition-all duration-75'
-                               />
+                           <img src={item.image} alt={item.name}
+                           className='max-h-full max-w-full object-contain transition-all duration-75' />
                        </div>
                        <div className='p-4 sm:p-6 flex flex-col flex-grow'>
                           <div className='absolute top-0 left-1/2 -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-transparent
@@ -104,17 +97,10 @@ function OurHomeMenu() {
                 )
               })}
             </div>
-            <div className='flex justify-center mt-16'>
-               <Link className='bg-amber-900/30 border-2 border-amber-800/30 text-amber-100 px-8
-               sm:px-10 py-3 rounded-full font-cinzel uppercase tracking-widest transition-all duration-300
-               hover:bg-amber-800/40 hover:text-amber-50 hover:scale-105 hover:shadow-lg
-               hover:shadow-amber-900/20 backdrop-blur-sm' to='/menu'>
-                 Explore Full Menu
-               </Link>
-            </div>
+            
         </div>
     </div>
   )
 }
 
-export default OurHomeMenu
+export default OurMenu

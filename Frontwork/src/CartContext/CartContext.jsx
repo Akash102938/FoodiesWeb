@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useReducer } from 'react'
 
 const CartContext = createContext();
-// REDUCER HANDLING CART ACTIONS LIKE ADD,REMOVE,UPDATE QUNATITY AND ITEM.
+// REDUCER HANDLING CART ACTIONS LIKE ADD,REMOVE,UPDATE QUNATITY AND ITEMS.
 const cartReducer = (state,action)=>{
   switch(action.type){
     case 'ADD_ITEM': {
@@ -18,6 +18,9 @@ const cartReducer = (state,action)=>{
     case 'UPDATE_QUANTITY':{
       const {itemId, newQuantity} = action.payload;
       return state.map(i=> i.id === itemId ? {...i, quantity: Math.max(1,newQuantity)}: i)
+    }
+    default: {
+      return state;
     }
   }
 }
@@ -61,7 +64,7 @@ export const CartProvider = ({children})=>{
     dispatch({type: 'REMOVE_ITEM', payload:{itemId}})
   },[])
 
-  const updateQuantiy = useCallback((itemId,newQuantity)=>{
+  const updateQuantity = useCallback((itemId,newQuantity)=>{
     dispatch({type: 'UPDATE_QUANTITY', payload:{itemId,newQuantity}})
   },[])
 
@@ -70,7 +73,7 @@ export const CartProvider = ({children})=>{
       cartItems,
       addToCart,
       removeFromCart,
-      updateQuantiy,
+      updateQuantity,
       cartTotal,
       totalItems: formatTotalItems(totalItemsCount)
     }}>

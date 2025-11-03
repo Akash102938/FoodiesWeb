@@ -4,6 +4,7 @@ import {dummyMenuData} from '../../assets/OmhDD'
 import { FaPlus,FaMinus } from "react-icons/fa";
 import {Link } from 'react-router-dom'
 import './OurHomeMenu.css'
+import fallbackImage from '../../assets/AboutImage.png'
 
 const categories = ['Breakfast', 'Lunch', 'Dinner','Mexican', 'Italian', 'Desserts', 'Drinks']
 
@@ -50,7 +51,7 @@ function OurHomeMenu() {
                                <img
                                  src={item.image}
                                  alt={item.name}
-                                 onError={(e) => { if (e?.target) e.target.src = fallbackImage }}
+                                 onError={(e) => { if (e?.currentTarget) e.currentTarget.src = fallbackImage }}
                                  className='max-h-full max-w-full object-contain transition-all duration-75'
                                />
                        </div>

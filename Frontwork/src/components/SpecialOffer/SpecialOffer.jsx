@@ -4,11 +4,12 @@ import { useCart } from '../../CartContext/CartContext.jsx';
 import { FaStar, FaHeart, FaPlus, FaFire } from 'react-icons/fa';
 import { HiMinus, HiPlus } from "react-icons/hi";
 import FloatingParticle from '../FloatingParticle/FloatingParticle.jsx';
+import fallbackImage from '../../assets/AboutImage.png'
 
 function SpecialOffer() {
   const [showAll, setShowAll] = useState(false);
   const initialData = [...cardData, ...additionalData];
-  const { addToCart, updateQuantiy, removeFromCart, cartItems } = useCart();
+  const { addToCart, updateQuantity, removeFromCart, cartItems } = useCart();
 
   return (
     <div className='bg-gradient-to-b from-[#1a1212] to-[#2a1e1e] text-white py-16 px-4 font-[poppons] '>
@@ -35,7 +36,7 @@ function SpecialOffer() {
                     hover:shadow-red-900/40 border-2 border-transparent hover:border-amber-500/20 before:absolute
                     before:inset-0 hover:before:opacity-20'>
                 <div className='relative h-72 overflow-hidden'>
-                  <img src={item.image} alt={item.title} className='w-full h-full object-cover
+                  <img src={item.image} alt={item.title} onError={(e) => { if (e?.currentTarget) e.currentTarget.src = fallbackImage }} className='w-full h-full object-cover
                            brightness-90 group-hover:brightness-110 transition-all duration-500'/>
                   <div className='absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/90' />
                   <div className='absolute bottom-4 left-4 right-4 flex justify-between items-center
@@ -65,7 +66,7 @@ function SpecialOffer() {
                         {cartItem ? (
                           <div className='flex items-center gap-3'>
                              <button onClick={()=>{
-                              quantity >1 ? updateQuantiy(item.id, quantity-1)
+                               quantity >1 ? updateQuantity(item.id, quantity-1)
                               : removeFromCart(item.id)
                              }} className='w-8 h-8 rounded-full bg-amber-900/40 flex items-center
                              justify-center hover:bg-amber-800/50 transition-all duration-200 active:scale-95'>
@@ -74,7 +75,7 @@ function SpecialOffer() {
                              <span className='w-8 text-center text-amber-100 font-cinzel'>
                               {quantity}
                              </span>
-                             <button onClick={()=>{ updateQuantiy(item.id, quantity+1)
+                             <button onClick={()=>{ updateQuantity(item.id, quantity+1)
                              }} className='w-8 h-8 rounded-full bg-amber-900/40 flex items-center
                              justify-center hover:bg-amber-800/50 transition-all duration-200 active:scale-95'>
                                  <HiPlus className='w-4 h-4 text-amber-100'/>

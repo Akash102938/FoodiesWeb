@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useCart } from '../../CartContext/CartContext'
 import {dummyMenuData} from '../../assets/OmDD'
 
+import fallbackImage from '../../assets/AboutImage.png'
+
 import { FaPlus ,FaMinus  } from "react-icons/fa";
 import './OurMenu.css'
 const categories = ['Breakfast', 'Lunch', 'Dinner','Mexican', 'Italian', 'Desserts', 'Drinks']
@@ -45,6 +47,7 @@ const getQuantity = id =>(cartItems.find(i => i.id===id)?.quantity || 0)
                     style={{'--index': i}}>
                        <div className='relative h-48 sm:h-56 md:h-60 flex items-center justify-center bg-black/10'>
                            <img src={item.image} alt={item.name}
+                           onError={(e) => { if (e?.currentTarget) e.currentTarget.src = fallbackImage }}
                            className='max-h-full max-w-full object-contain transition-all duration-75' />
                        </div>
                        <div className='p-4 sm:p-6 flex flex-col flex-grow'>

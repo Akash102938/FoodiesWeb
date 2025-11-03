@@ -73,7 +73,7 @@ function Footer() {
               <ul className='space-y-3'>
                   {navItems.map(item=>(
                     <li key={item.name}>
-                       <a href="item.link" className='flex items-center hover:text-amber-400
+                       <a href={item.link} className='flex items-center hover:text-amber-400
                        transition-all group font-loran hover:pl-2'>
                         <BiChevronRight className='mr-2 text-amber-400 group-hover:animate-bounce'/>
                         <span className='hover:italic'>{item.name}</span>

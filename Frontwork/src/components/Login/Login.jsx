@@ -46,7 +46,7 @@ function Login({ onLoginSuccess, onClose }) {
           <FaLock className={iconClass} />
           <input type={showPassword ? 'text' : 'password'} name='password' placeholder='Password' value={FormData.password}
             onChange={handleChange} className={`${inputBase} pl-10 pr-4 py-3`} />
-          <button type='button' onClick={toggleShowPassword} className='absoulte right-3
+          <button type='button' onClick={toggleShowPassword} className='absolute right-3
            top-1/2 transform -translate-y-1/2 text-amber-400'>
             {showPassword ? <FaEyeSlash /> : <FaEye />}
           </button>

@@ -4,6 +4,9 @@ import fallbackImage from "../../assets/AboutImage.png";
 import axios from "axios";
 
 import { FaPlus, FaMinus } from "react-icons/fa";
+import { motion } from "framer-motion";
+import toast from "react-hot-toast";
+
 import "./OurMenu.css";
 
 const categories = [
@@ -22,7 +25,7 @@ function OurMenu() {
   const [menuData, setMenuData] = useState({});
 
   // ===========================
-  // 🔥 FIXED useEffect — loads MENU API correctly
+  // LOAD MENU ITEMS
   // ===========================
   useEffect(() => {
     const fetchMenu = async () => {
@@ -52,6 +55,24 @@ function OurMenu() {
   const getQuantity = (id) => getCartEntry(id)?.quantity || 0;
 
   const displayItems = (menuData[activeCategory] ?? []).slice(0, 12);
+
+  // ===========================
+  // HANDLE ADD TO CART WITH LOGIN CHECK
+  // ===========================
+  const handleAddToCart = (item) => {
+    const token = localStorage.getItem("authToken");
+
+    if (!token) {
+      toast.error("Please login to add items to cart");
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 1000);
+      return;
+    }
+
+    addToCart(item, 1);
+    toast.success("Added to cart!");
+  };
 
   return (
     <div className="bg-gradient-to-br from-[#1a120b] to-[#3a2b1d] min-h-screen py-16 px-4 sm:px-6 lg:px-8">
@@ -85,7 +106,7 @@ function OurMenu() {
 
         {/* MENU ITEMS */}
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4">
-          {displayItems.map((item, i) => {
+          {displayItems.map((item) => {
             const cartEntry = getCartEntry(item._id);
             const quantity = getQuantity(item._id);
 
@@ -104,7 +125,7 @@ function OurMenu() {
                 </div>
 
                 <div className="p-4 sm:p-6 flex flex-col flex-grow">
-                  <h3 className="text-xl sm:text-2xl mb-2 font-dancingscript text-amber-100 transition-colors">
+                  <h3 className="text-xl sm:text-2xl mb-2 font-dancingscript text-amber-100">
                     {item.name}
                   </h3>
 
@@ -122,6 +143,7 @@ function OurMenu() {
                   <div className="flex items-center gap-2">
                     {quantity > 0 ? (
                       <>
+                        {/* MINUS BUTTON */}
                         <button
                           className="w-8 h-8 rounded-full bg-amber-900/40 flex items-center justify-center hover:bg-amber-800/50 transition-colors"
                           onClick={() =>
@@ -137,6 +159,7 @@ function OurMenu() {
                           {quantity}
                         </span>
 
+                        {/* PLUS BUTTON */}
                         <button
                           className="w-8 h-8 rounded-full bg-amber-900/40 flex items-center justify-center hover:bg-amber-800/50 transition-colors"
                           onClick={() =>
@@ -147,12 +170,21 @@ function OurMenu() {
                         </button>
                       </>
                     ) : (
-                      <button
-                        onClick={() => addToCart(item, 1)}
-                        className="bg-amber-900/40 px-4 py-1.5 rounded-full font-cinzel text-xs uppercase sm:text-sm tracking-wider transition-transform duration-300 hover:scale-110 hover:shadow-lg hover:shadow-amber-900/20 border border-amber-800/50"
+                      <motion.button
+                        whileTap={{ scale: 0.9 }}
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.2 }}
+                        onClick={() => handleAddToCart(item)}
+                        className="relative overflow-hidden bg-amber-900/40 px-4 py-1.5 rounded-full font-cinzel text-xs uppercase sm:text-sm tracking-wider border border-amber-800/40 transition-all duration-300"
                       >
+                        <motion.span
+                          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                          initial={{ x: "-150%" }}
+                          whileHover={{ x: "150%" }}
+                          transition={{ duration: 1 }}
+                        />
                         <span className="relative z-10 text-black">Add to Cart</span>
-                      </button>
+                      </motion.button>
                     )}
                   </div>
                 </div>

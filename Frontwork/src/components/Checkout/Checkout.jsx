@@ -95,10 +95,13 @@ function Checkout() {
         }
         throw new Error("Checkout URL not provided.");
       }
+      
+      if (formData.paymentMethod === "cod") {
+  clearCart();
+  navigate("/myorder");
+  return;
+}
 
-      // Cash on Delivery
-      clearCart();
-      navigate("/myorders", { state: { order: data.order || data } });
     } catch (err) {
       setError(err.response?.data?.message || err.message || "Failed to submit order.");
     } finally {

@@ -4,7 +4,7 @@ import { inputBase, iconClass } from '../../assets/dummydata'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 
-const url = 'http://localhost:4000'
+const url = 'https://foodiesweb-1.onrender.com'
 
 function Login({ onLoginSuccess, onClose }) {
   const [showToast, setShowToast] = useState({ visible: false, message: '', isError: false })

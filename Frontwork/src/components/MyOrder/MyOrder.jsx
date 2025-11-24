@@ -15,7 +15,7 @@ function MyOrder() {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get('http://localhost:4000/api/orders', {
+                const response = await axios.get('https://foodiesweb-1.onrender.com/api/orders', {
                     params: { email: user?.email },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('authToken')}`
@@ -191,7 +191,7 @@ function MyOrder() {
                                                                     entry.item.imageUrl?.startsWith('http')
                                                                         ? entry.item.imageUrl
                                                                         : entry.item.imageUrl
-                                                                            ? `http://localhost:4000${
+                                                                            ? `https://foodiesweb-1.onrender.com${
                                                                                 entry.item.imageUrl.startsWith('/')
                                                                                     ? entry.item.imageUrl
                                                                                     : `/uploads/${entry.item.imageUrl}`

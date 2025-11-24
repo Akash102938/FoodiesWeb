@@ -11,7 +11,7 @@ function Order() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get('http://localhost:4000/api/orders/getall', {
+        const res = await axios.get('https://foodiesweb-1.onrender.com/api/orders/getall', {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
 
@@ -50,7 +50,7 @@ function Order() {
 const handleStatusChange = async (orderId, newStatus) => {
   try {
     await axios.put(
-      `http://localhost:4000/api/orders/getall/${orderId}`,
+      `https://foodiesweb-1.onrender.comapi/orders/getall/${orderId}`,
       { status: newStatus },
       {
         headers: {
@@ -147,7 +147,7 @@ const handleStatusChange = async (orderId, newStatus) => {
                           {order.items.map((itm, idx) => (
                             <div key={idx} className="flex items-center gap-3 rounded-lg">
                               <img
-                                src={`http://localhost:4000/${itm.item.imageUrl}`}
+                                src={`https://foodiesweb-1.onrender.com/${itm.item.imageUrl}`}
                                 alt={itm.item.name}
                                 className="w-10 h-10 object-cover rounded-lg"
                               />

@@ -3,7 +3,7 @@ import { FaArrowLeft, FaCheckCircle, FaEyeSlash, FaEye } from 'react-icons/fa'
 import { useNavigate, Link } from 'react-router-dom'
 import axios  from 'axios'
 
-const url = 'http://localhost:4000'
+const url = 'https://foodiesweb-1.onrender.com'
  
 const AwesomeToast = ({ message, icon }) => (
   <div className='animate-slide-in fixed bottom-6 right-6 flex items-center bg-gradient-to-br from-amber-500 to-amber-600

@@ -4,7 +4,7 @@ import { useCart } from "../../CartContext/CartContext";
 import { FaMinus, FaPlus, FaTimes, FaTrash } from "react-icons/fa";
 import fallbackImage from "../../assets/AboutImage.png";
 
-const API_URL = "http://localhost:4000";
+const API_URL = "https://foodiesweb-1.onrender.com";
 
 function CartPage() {
   const { cartItems, removeFromCart, updateQuantity, totalAmount } = useCart();

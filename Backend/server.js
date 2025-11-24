@@ -20,8 +20,8 @@ const __dirname = path.dirname(__filename);
 
 // ✅ Updated CORS - All possible ports allowed
 const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:5174',
+  'https://foodiesweb-frontend.onrender.com',
+  'https://foodiesweb-admin.onrender.com',
   'http://localhost:3000',
   'http://localhost:4173'   // Vite preview
 ];

@@ -44,44 +44,53 @@ function AddItems() {
   const handleHearts = () => setFormData(prev => ({ ...prev, hearts: prev.hearts + 1 }));
 
   const handleSubmit = async e => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!formData.image) {
-      alert("Please upload an image.");
-      return;
-    }
+  if (!formData.image) {
+    alert("Please upload an image.");
+    return;
+  }
 
-    try {
-      const payload = new FormData();
-      Object.entries(formData).forEach(([key, val]) => {
-        if (key === 'preview') return;
-        payload.append(key, val);
-      });
+  try {
+    const payload = new FormData();
 
-      const res = await axios.post(
-        'https://foodiesweb-1.onrender.com/api/items',
-        payload,
-        { headers: { 'Content-Type': 'multipart/form-data' } }
-      );
+    payload.append("name", formData.name);
+    payload.append("description", formData.description);
+    payload.append("category", formData.category);
+    payload.append("price", formData.price);
+    payload.append("rating", formData.rating);
+    payload.append("hearts", formData.hearts);
+    payload.append("total", formData.total);
 
-      console.log('Item uploaded:', res.data);
+    // 🔥 THE IMPORTANT FIX
+    payload.append("imageUrl", formData.image);
 
-      setFormData({
-        name: '',
-        description: '',
-        category: '',
-        price: '',
-        rating: 0,
-        hearts: 0,
-        total: 0,
-        image: null,
-        preview: ''
-      });
+    const res = await axios.post(
+      "https://foodiesweb-1.onrender.com/api/items",
+      payload,
+      {
+        headers: { "Content-Type": "multipart/form-data" }
+      }
+    );
 
-    } catch (error) {
-      console.error('Error uploading item:', error.response || error.message);
-    }
-  };
+    console.log("Item uploaded:", res.data);
+
+    setFormData({
+      name: "",
+      description: "",
+      category: "",
+      price: "",
+      rating: 0,
+      hearts: 0,
+      total: 0,
+      image: null,
+      preview: ""
+    });
+
+  } catch (error) {
+    console.error("Error uploading item:", error.response || error.message);
+  }
+};
 
   return (
     <div className={styles.formWrapper}>

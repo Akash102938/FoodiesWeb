@@ -49,8 +49,8 @@ function Order() {
 
 const handleStatusChange = async (orderId, newStatus) => {
   try {
-    await axios.put(
-      `https://foodiesweb-1.onrender.comapi/orders/getall/${orderId}`,
+    const res = await axios.put(
+      `https://foodiesweb-1.onrender.com/api/orders/update/${orderId}`,
       { status: newStatus },
       {
         headers: {
@@ -59,13 +59,17 @@ const handleStatusChange = async (orderId, newStatus) => {
       }
     );
 
-    setOrders(orders.map(o => 
-      o._id === orderId ? { ...o, status: newStatus } : o
-    ));
+    setOrders(prev =>
+      prev.map(o =>
+        o._id === orderId ? { ...o, status: newStatus } : o
+      )
+    );
+
   } catch (error) {
     alert(error.response?.data?.message || "Failed to update status");
   }
 };
+
 
 
 

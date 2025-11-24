@@ -1,9 +1,12 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import Checkout from '../../components/Checkout/Checkout'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
 
 function CheckoutPage() {
+    useEffect(()=>{
+      window.scrollTo(0,0);
+    },[]);
   return (
     <>
     <Navbar/>

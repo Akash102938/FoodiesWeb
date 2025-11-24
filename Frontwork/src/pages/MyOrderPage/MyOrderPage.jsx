@@ -1,9 +1,12 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import MyOrder from '../../components/MyOrder/MyOrder'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
 
 function MyOrderPage() {
+    useEffect(()=>{
+      window.scrollTo(0,0);
+    },[]);
   return (
     <>
     <Navbar/>

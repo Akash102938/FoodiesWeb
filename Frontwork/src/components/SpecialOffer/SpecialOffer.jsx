@@ -1,15 +1,25 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { cardData, additionalData, addButtonBase, addButtonHover, commonTransition } from '../../assets/dummydata'
 import { useCart } from '../../CartContext/CartContext.jsx';
 import { FaStar, FaHeart, FaPlus, FaFire } from 'react-icons/fa';
 import { HiMinus, HiPlus } from "react-icons/hi";
 import FloatingParticle from '../FloatingParticle/FloatingParticle.jsx';
 import fallbackImage from '../../assets/AboutImage.png'
+import axios from 'axios';
 
 function SpecialOffer() {
   const [showAll, setShowAll] = useState(false);
-  const initialData = [...cardData, ...additionalData];
+  const [items,setItems] = useState([]);
   const { addToCart, updateQuantity, removeFromCart, cartItems } = useCart();
+
+  //FETCH MENU
+  useEffect(()=>{
+    axios.get('http://localhost:4000/api/items')
+    .then(res => setItems(res.data.items ?? res.data))
+    .catch(err => console.error(err))
+  },[])
+
+  const displayList = Array.isArray(items) ? items.slice(0,showAll ? 8 : 4) : [];
 
   return (
     <div className='bg-gradient-to-b from-[#1a1212] to-[#2a1e1e] text-white py-16 px-4 font-[poppons] '>
@@ -26,17 +36,18 @@ function SpecialOffer() {
 
         {/*PRODUCT CARD */}
         <div className='grid grid-cols-1 sm:grid-cols md:grid-cols-3 lg:grid-cols-4 gap-8'>
-          {(showAll ? initialData : initialData.slice(0, 4)).map((item, index) => {
-            const cartItem = cartItems.find(ci => ci.id === item.id);
-            const quantity = cartItem ? cartItem.quantity : 0;
+          {displayList.map(item =>{
+            const cartItem = cartItems.find(ci => ci.item._id === item._id);
+            const qty = cartItem ? cartItem.quantity : 0;
+            const cartId = cartItem?._id
 
             return (
-              <div key={`${item.id}- ${index}`} className='relative group bg-[#4b3b1b] rounded-3xl
+              <div key={item._id} className='relative group bg-[#4b3b1b] rounded-3xl
                     overflow-hidden shadow-2xl transform hover:-translate-y-4 transition-all duration-500
                     hover:shadow-red-900/40 border-2 border-transparent hover:border-amber-500/20 before:absolute
                     before:inset-0 hover:before:opacity-20'>
                 <div className='relative h-72 overflow-hidden'>
-                  <img src={item.image} alt={item.title} onError={(e) => { if (e?.currentTarget) e.currentTarget.src = fallbackImage }} className='w-full h-full object-cover
+                  <img src={item.imageUrl} alt={item.name} onError={(e) => { if (e?.currentTarget) e.currentTarget.src = fallbackImage }} className='w-full h-full object-cover
                            brightness-90 group-hover:brightness-110 transition-all duration-500'/>
                   <div className='absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/90' />
                   <div className='absolute bottom-4 left-4 right-4 flex justify-between items-center
@@ -54,35 +65,35 @@ function SpecialOffer() {
                 <div className='p-6 relative z-10'>
                     <h3 className='text-2xl font-bold mb-2 bg-gradient-to-r from-amber-400 to-amber-500 bg-clip-text
                     text-transparent font-[Playfair_Display] italic'>
-                       {item.title}
+                       {item.name}
                     </h3>
                     <p className='text-gray-300 mb-5 text-sm leading-relaxed tracking-wide'>
                       {item.description}
                     </p>
                     <div className='flex items-center justify-between gap-4'>
                         <span className='text-2xl font-bold text-amber-400 flex-1'>
-                          {item.price}
+                          {Number(item.price).toFixed(2)}
                         </span>
-                        {cartItem ? (
+                        {qty > 0 ? (
                           <div className='flex items-center gap-3'>
                              <button onClick={()=>{
-                               quantity >1 ? updateQuantity(item.id, quantity-1)
-                              : removeFromCart(item.id)
+                               qty >1 ? updateQuantity(cartId, qty -1 )
+                              : removeFromCart(cartId)
                              }} className='w-8 h-8 rounded-full bg-amber-900/40 flex items-center
                              justify-center hover:bg-amber-800/50 transition-all duration-200 active:scale-95'>
                                  <HiMinus className='w-4 h-4 text-amber-100'/>
                              </button>
                              <span className='w-8 text-center text-amber-100 font-cinzel'>
-                              {quantity}
+                              {qty}
                              </span>
-                             <button onClick={()=>{ updateQuantity(item.id, quantity+1)
+                             <button onClick={()=>{ updateQuantity(cartId, qty + 1)
                              }} className='w-8 h-8 rounded-full bg-amber-900/40 flex items-center
                              justify-center hover:bg-amber-800/50 transition-all duration-200 active:scale-95'>
                                  <HiPlus className='w-4 h-4 text-amber-100'/>
                              </button>
                           </div>
                         ):( 
-                          <button onClick={()=> addToCart({...item,name:item.title,price:parseFloat(item.price.replace('₹',''))},1)}
+                          <button onClick={()=> addToCart(item,1)}
                           className={`${addButtonBase} ${addButtonHover} ${commonTransition}`}>
                               <div className='absolute inset-0 bg-graadient-to-r from-amber-500/20 to-transparent
                               opacity-0 hover:opacity-100 transition-opacity duration-300' />

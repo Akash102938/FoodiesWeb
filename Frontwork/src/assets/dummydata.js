@@ -175,3 +175,5 @@ export const bannerAssets = {
     orbitImages: [Image1, Image2, Image3, Image4],
     video: Video,
 };
+console.log(Image1, Image2, Image3, Image4);
+

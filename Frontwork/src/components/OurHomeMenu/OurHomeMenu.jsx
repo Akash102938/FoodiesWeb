@@ -1,18 +1,37 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useCart } from '../../CartContext/CartContext'
 import {dummyMenuData} from '../../assets/OmhDD'
 import { FaPlus,FaMinus } from "react-icons/fa";
 import {Link } from 'react-router-dom'
 import './OurHomeMenu.css'
 import fallbackImage from '../../assets/AboutImage.png'
+import axios from 'axios';
 
 const categories = ['Breakfast', 'Lunch', 'Dinner','Mexican', 'Italian', 'Desserts', 'Drinks']
 
 function OurHomeMenu() {
   const [activeCategory, setActiveCartegory] = useState(categories[0])
-  const displayItems = (dummyMenuData[activeCategory] || [] ).slice(0,4)
-  const {cartItems, addToCart, removeFromCart} = useCart()
-    const getQuantity = id =>(cartItems.find(i => i.id===id)?.quantity || 0)
+ 
+  const {cartItems, addToCart, removeFromCart,updateQuantity} = useCart()
+  const [menuData,setMenuData] = useState({});
+
+  useEffect(()=>{
+    axios.get('http://localhost:4000/api/items')
+    .then(res =>{
+      const grouped = res.data.reduce((acc,item)=>{
+        acc[item.category] = acc[item.category] || [];
+        acc[item.category].push(item)
+        return acc;
+      },{})
+      setMenuData(grouped)
+    })
+    .catch(console.error)
+  },[])
+
+  //USE ID TO FIND AND UPDATE
+  const getCartEntry = id => cartItems.find(ci => ci.item._id === id);
+  const getQuantity = id => getCartEntry(id)?.quantity || 0;
+  const displayItems = (menuData[activeCategory] || []).slice(0,4)
 
   return (
     <div className='bg-gradient-to-br from-[#1a120b] to-[#3a2b1d] min-h-screen py-16
@@ -42,18 +61,21 @@ function OurHomeMenu() {
             </div>
             <div className='grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 '>
               {displayItems.map((item,i)=>{
-                const quantity = getQuantity(item.id);
+                const qty = getQuantity(item._id);
+                const cartEntry = getCartEntry(item._id)
                 return(
                     <div key={item.id} className='relative bg-amber-900/20 rounded-2xl overflow-hidden border
                     border-amber-800/30 backdrop-blur-sm flex flex-col transition-all duration-500'
                     style={{'--index': i}}>
                        <div className='relative h-48 sm:h-56 md:h-60 flex items-center justify-center bg-black/10'>
-                               <img
-                                 src={item.image}
-                                 alt={item.name}
-                                 onError={(e) => { if (e?.currentTarget) e.currentTarget.src = fallbackImage }}
-                                 className='max-h-full max-w-full object-contain transition-all duration-75'
-                               />
+                              <img
+  src={item.imageUrl}
+  alt={item.name}
+  onError={(e) => { e.currentTarget.src = fallbackImage }}
+  className="max-h-full max-w-full object-contain transition-all duration-75"
+/>
+
+
                        </div>
                        <div className='p-4 sm:p-6 flex flex-col flex-grow'>
                           <div className='absolute top-0 left-1/2 -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-transparent
@@ -68,22 +90,22 @@ function OurHomeMenu() {
                           <div className='mt-auto flex items-center gap-4 justify-between'>
                             <div className='bg-amber-100/10 backdrop-blur-sm px-3 py-1 rounded-2xl shadow-lg'></div>
                               <span className='text-xl font-bold text-amber-300 font-dancingscript'>
-                                 ₹{item.price}
+                                 ₹{Number(item.price).toFixed(2)}
                               </span>
                           </div>
                           <div className='flex items-center gap-2'>
-                            {quantity > 0 ?(
+                            {qty> 0 ?(
                                 <>
                                     <button className='w-8 h-8 rounded-full bg-amber-900/40 flex items-center
-                                    justify-center hover:bg-amber-800/50 transition-colors' onClick={()=> quantity > 1 ? addToCart(item,quantity - 1) : removeFromCart(item.id)}>
+                                    justify-center hover:bg-amber-800/50 transition-colors' onClick={()=> qty > 1 ? updateQuantity(cartEntry._id,qty - 1) : removeFromCart(cartEntry._id)}>
                                         <FaMinus  className='text-amber-100'/>
                                     </button>
                                     <span className='w-8 text-center text-amber-100'>
-                                      {quantity}
+                                      {qty}
                                     </span>
                                     <button className='w-8 h-8 rounded-full bg-amber-900/40 flex items-center
                                     justify-center hover:bg-amber-800/50 transition-colors'
-                                    onClick={()=> addToCart(item, quantity+1)}>
+                                    onClick={()=> updateQuantity(cartEntry._id, qty+1)}>
                                       <FaPlus className = 'text-amber-100' />
                                     </button>
                                 </>

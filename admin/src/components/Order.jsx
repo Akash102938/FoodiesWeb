@@ -8,25 +8,28 @@ function Order() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Fetch all orders
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get('https://foodiesweb-1.onrender.com/api/orders/getall', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        });
+        const res = await axios.get(
+          'https://foodiesweb-1.onrender.com/api/orders/getall',
+          {
+            headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
+          }
+        );
 
         const formatted = res.data.map(order => ({
           ...order,
-          address: order.address ?? order.shippingAddress?.address ?? '',
-          city: order.city ?? order.shippingAddress?.city ?? '',
-          zipCode: order.zipCode ?? order.shippingAddress?.zipCode ?? '',
+          address: order.address ?? '',
+          city: order.city ?? '',
+          zipCode: order.zipCode ?? '',
           phone: order.phone ?? order.user?.phone ?? '',
-          items:
-            order.items?.map(i => ({
-              _id: i._id,
-              item: i.item,
-              quantity: i.quantity,
-            })) || [],
+          items: order.items?.map(i => ({
+            _id: i._id,
+            item: i.item,
+            quantity: i.quantity
+          })) || [],
           createdAt: new Date(order.createdAt).toLocaleDateString('en-IN', {
             year: 'numeric',
             month: 'long',
@@ -47,45 +50,36 @@ function Order() {
     fetchOrders();
   }, []);
 
-const handleStatusChange = async (orderId, newStatus) => {
-  try {
-    const res = await axios.put(
-      `https://foodiesweb-1.onrender.com/api/orders/update/${orderId}`,
-      { status: newStatus },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+  // Handle order status update
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      await axios.put(
+        `https://foodiesweb-1.onrender.com/api/orders/getall/${orderId}`,
+        { status: newStatus },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
         }
-      }
-    );
+      );
 
-    setOrders(prev =>
-      prev.map(o =>
-        o._id === orderId ? { ...o, status: newStatus } : o
-      )
-    );
+      setOrders(prev =>
+        prev.map(o => (o._id === orderId ? { ...o, status: newStatus } : o))
+      );
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to update status');
+    }
+  };
 
-  } catch (error) {
-    alert(error.response?.data?.message || "Failed to update status");
-  }
-};
+  if (loading) return (
+    <div className={`${layoutClasses.page} flex items-center justify-center`}>
+      <div className="text-amber-400 text-xl">Loading orders...</div>
+    </div>
+  );
 
-
-
-
-  if (loading)
-    return (
-      <div className={`${layoutClasses.page} flex items-center justify-center`}>
-        <div className="text-amber-400 text-xl">Loading orders...</div>
-      </div>
-    );
-
-  if (error)
-    return (
-      <div className={`${layoutClasses.page} flex items-center justify-center`}>
-        <div className="text-amber-400 text-xl">{error}</div>
-      </div>
-    );
+  if (error) return (
+    <div className={`${layoutClasses.page} flex items-center justify-center`}>
+      <div className="text-amber-400 text-xl">{error}</div>
+    </div>
+  );
 
   return (
     <div className={layoutClasses.page}>
@@ -108,14 +102,9 @@ const handleStatusChange = async (orderId, newStatus) => {
               <tbody>
                 {orders.map(order => {
                   const totalItems = order.items.reduce((t, i) => t + i.quantity, 0);
-                  const totalPrice =
-                    order.total ??
-                    order.items.reduce((s, i) => s + i.item.price * i.quantity, 0);
+                  const totalPrice = order.total ?? order.items.reduce((s, i) => s + i.item.price * i.quantity, 0);
 
-                  const payMethod =
-                    paymentMethodDetails[order.paymentMethod?.toLowerCase()] ||
-                    paymentMethodDetails.default;
-
+                  const payMethod = paymentMethodDetails[order.paymentMethod?.toLowerCase()] || paymentMethodDetails.default;
                   const payStatusStyle = statusStyles[order.paymentStatus] || statusStyles.processing;
                   const stat = statusStyles[order.status] || statusStyles.processing;
 
@@ -131,7 +120,7 @@ const handleStatusChange = async (orderId, newStatus) => {
                         <div className="flex flex-col">
                           <div className="flex items-center gap-2">
                             <FiUser className="text-amber-400 text-lg" />
-                            <span>{order.user?.name || `${order.firstname || ''} ${order.lastName || ''}`}</span>
+                            <span>{order.user?.name || `${order.firstName} ${order.lastName}`}</span>
                           </div>
                           <p className="text-sm text-amber-400/60">{order.phone}</p>
                           <p className="text-sm text-amber-400/60">{order.user?.email || order.email}</p>
@@ -145,7 +134,7 @@ const handleStatusChange = async (orderId, newStatus) => {
                         </div>
                       </td>
 
-                      {/* ITEMS LIST */}
+                      {/* ITEMS */}
                       <td className={tableClasses.cellBase}>
                         <div className="space-y-1 max-h-52 overflow-auto">
                           {order.items.map((itm, idx) => (
@@ -189,7 +178,6 @@ const handleStatusChange = async (orderId, newStatus) => {
                           <div className={`${payMethod.class} px-3 py-1.5 rounded-lg border text-sm`}>
                             {payMethod.label}
                           </div>
-
                           <div className={`${payStatusStyle.color} flex items-center gap-2 text-sm`}>
                             {iconMap[payStatusStyle.icon]}
                             <span>{payStatusStyle.label}</span>
@@ -201,7 +189,6 @@ const handleStatusChange = async (orderId, newStatus) => {
                       <td className={tableClasses.cellBase}>
                         <div className="flex items-center gap-2">
                           <span className={`${stat.color} text-xl`}>{iconMap[stat.icon]}</span>
-
                           <select
                             value={order.status}
                             onChange={e => handleStatusChange(order._id, e.target.value)}

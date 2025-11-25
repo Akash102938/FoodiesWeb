@@ -1,29 +1,26 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 const authMiddleWare = (req, res, next) => {
+  // Skip auth for admin routes
+  if (req.originalUrl.startsWith("/api/orders/getall")) {
+    return next();
+  }
+
+  const token =
+    req.cookies?.token ||
+    (req.headers.authorization && req.headers.authorization.split(" ")[1]);
+
+  if (!token) {
+    return res.status(401).json({ success: false, message: "Token Missing" });
+  }
+
   try {
-    // Safely get token from cookies or headers
-    const token =
-      (req.cookies && req.cookies.token) ||
-      (req.headers && req.headers.authorization
-        ? req.headers.authorization.split(' ')[1]
-        : null);
-
-    if (!token) {
-      return res
-        .status(401)
-        .json({ success: false, message: 'Token missing or not provided' });
-    }
-
-    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = { _id: decoded.id, email: decoded.email };
     next();
   } catch (error) {
-    console.error('Auth middleware error:', error.message);
-
     const message =
-      error.name === 'TokenExpiredError' ? 'Token expired' : 'Invalid token';
+      error.name === "TokenExpiredError" ? "Token expired" : "Invalid Token";
     res.status(403).json({ success: false, message });
   }
 };

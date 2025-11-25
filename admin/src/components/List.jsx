@@ -25,7 +25,7 @@ function List() {
     if (!window.confirm('Are you sure you want to delete this item?')) return;
 
     try {
-      await axios.delete(`https://foodiesweb-1.onrender.comapi/items/${itemId}`);
+      await axios.delete(`https://foodiesweb-1.onrender.com/api/items/${itemId}`);
       setItems((prev) => prev.filter((item) => item._id !== itemId));
       console.log('Deleted item ID', itemId);
     } catch (error) {

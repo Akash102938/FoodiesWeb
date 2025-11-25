@@ -52,22 +52,25 @@ function Order() {
 
   // Handle order status update
   const handleStatusChange = async (orderId, newStatus) => {
-    try {
-      await axios.put(
-        `https://foodiesweb-1.onrender.com/api/orders/getall/${orderId}`,
-        { status: newStatus },
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
-        }
-      );
+  try {
+    const token = localStorage.getItem("token");
 
-      setOrders(prev =>
-        prev.map(o => (o._id === orderId ? { ...o, status: newStatus } : o))
-      );
-    } catch (err) {
-      alert(err.response?.data?.message || 'Failed to update status');
-    }
-  };
+    const res = await axios.put(
+      `https://foodiesweb-1.onrender.com/api/orders/update/${orderId}`,
+      { status: newStatus },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    setOrders(prev =>
+      prev.map(o =>
+        o._id === orderId ? { ...o, status: newStatus } : o
+      )
+    );
+  } catch (error) {
+    alert(error.response?.data?.message || "Failed to update status");
+  }
+};
+
 
   if (loading) return (
     <div className={`${layoutClasses.page} flex items-center justify-center`}>

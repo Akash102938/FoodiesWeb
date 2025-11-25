@@ -15,16 +15,15 @@ const orderRouter = express.Router();
 // ⭐ PUBLIC route for Stripe confirmation
 orderRouter.get('/confirm', confirmPayment);
 
-// 🧑‍💼 ADMIN ROUTES - require admin auth
-orderRouter.get('/getall', authMiddleware('admin'), getAllOrders);
-orderRouter.put('/getall/:id', authMiddleware('admin'), updateAnyOrder);
+// 🧑‍💼 ADMIN ROUTES → protect with auth
+orderRouter.use(authMiddleware);
+orderRouter.get('/getall', getAllOrders);
+orderRouter.put('/update/:id', updateAnyOrder); // fixed route to /update/:id
 
-// 🔐 USER ROUTES - require user auth
-orderRouter.use(authMiddleware()); // normal user auth
-
-orderRouter.post('/', createOrder);          // create order
-orderRouter.get('/', getOrders);            // get logged-in user's orders
-orderRouter.get('/:id', getOrderById);      // get order by id
-orderRouter.put('/:id', updateOrder);       // user update their own order
+// USER ROUTES
+orderRouter.post('/', createOrder);
+orderRouter.get('/', getOrders);
+orderRouter.get('/:id', getOrderById);
+orderRouter.put('/:id', updateOrder);
 
 export default orderRouter;

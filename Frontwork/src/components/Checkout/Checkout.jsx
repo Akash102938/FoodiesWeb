@@ -98,7 +98,7 @@ function Checkout() {
 
       if (formData.paymentMethod === "cod") {
         clearCart();
-        navigate("/myorders");
+        navigate("/myorder");
         return;
       }
 

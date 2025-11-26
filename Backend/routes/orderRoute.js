@@ -12,19 +12,34 @@ import authMiddleware from '../middleware/auth.js';
 
 const orderRouter = express.Router();
 
-// 🧑‍💼 ADMIN ROUTES
-orderRouter.get('/getall', getAllOrders);
-orderRouter.put('/getall/:id', updateAnyOrder);
+// -------------------- ADMIN ROUTES --------------------
 
-// ⭐ PUBLIC route for Stripe confirmation
+// Get all orders (Admin)
+orderRouter.get('/getall', getAllOrders);
+
+// UPDATE ORDER STATUS (Admin)  ✅ FIXED ROUTE
+orderRouter.put('/update/:id', updateAnyOrder);
+
+
+// -------------------- PUBLIC ROUTE --------------------
+
+// Stripe confirmation (no auth)
 orderRouter.get('/confirm', confirmPayment);
 
-// 🔐 USER AUTH ROUTES
+
+// -------------------- AUTH PROTECTED USER ROUTES --------------------
 orderRouter.use(authMiddleware);
 
+// Create new order
 orderRouter.post('/', createOrder);
+
+// Get orders of logged-in user
 orderRouter.get('/', getOrders);
+
+// Get single order by id
 orderRouter.get('/:id', getOrderById);
+
+// User update their order
 orderRouter.put('/:id', updateOrder);
 
 export default orderRouter;

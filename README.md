@@ -22,7 +22,7 @@ A full-stack food ordering web app with authentication, cart system, admin dashb
 
 **Live Demo:** ['https://foodiesweb-frontend.onrender.com']
 
-*(Add screenshots here if available)*
+
 
 ---
 

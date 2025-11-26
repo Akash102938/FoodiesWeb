@@ -53,7 +53,7 @@ function Order() {
   // Handle order status update
   const handleStatusChange = async (orderId, newStatus) => {
   try {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("adminToken");
 
     const res = await axios.put(
       `https://foodiesweb-1.onrender.com/api/orders/update/${orderId}`,
@@ -70,6 +70,7 @@ function Order() {
     alert(error.response?.data?.message || "Failed to update status");
   }
 };
+
 
 
   if (loading) return (
@@ -143,7 +144,7 @@ function Order() {
                           {order.items.map((itm, idx) => (
                             <div key={idx} className="flex items-center gap-3 rounded-lg">
                               <img
-                                src={`https://foodiesweb-1.onrender.com/${itm.item.imageUrl}`}
+                                src={`https://foodiesweb-1.onrender.com/${itm.item.imageUrl?.replace(/\\/g, "/")}`}
                                 alt={itm.item.name}
                                 className="w-10 h-10 object-cover rounded-lg"
                               />
